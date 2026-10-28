@@ -175,9 +175,28 @@ const cityCats = () => CATEGORIES.filter(c => city.places.some(p => p.cat===c.id
 const ICON_COPY = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>`;
 const ICON_OK = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>`;
 
+// Remember the last city and each city's filters in this browser only.
+const STORE_KEY = "travelpicks:v1";
+function loadStore(){ try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(_) { return {}; } }
+function saveStore(){
+  try {
+    const st = loadStore(); st.lastCity = city.id; st.cities = st.cities || {};
+    st.cities[city.id] = {cat: activeCat, tags: [...activeTags]};
+    localStorage.setItem(STORE_KEY, JSON.stringify(st));
+  } catch(_) {}
+}
+function restoreFilters(){
+  const saved = ((loadStore().cities) || {})[city.id];
+  if(!saved) return;
+  const allTags = Object.values(city.tags || {}).flat();
+  if(saved.cat==="all" || cityCats().some(c => c.id===saved.cat)) activeCat = saved.cat;
+  (saved.tags || []).filter(t => allTags.includes(t)).forEach(t => activeTags.add(t));
+}
+
 function setCity(id){
   city = CITIES.find(c => c.id===id) || CITIES[0];
   activeCat = "all"; activeTags.clear(); $("#q").value = "";
+  restoreFilters();
   document.title = city.name + " Picks";
   $("#cityname").textContent = city.name;
   $("#eyebrow").textContent = city.name + (city.zh ? " · " + city.zh : "");
@@ -231,6 +250,7 @@ function cardHTML(p,q){ return `
 
 function render(){
   renderBar();
+  saveStore();
   const {q, list} = filtered();
   const parts = [];
   if(activeTags.size) parts.push("Tagged " + [...activeTags].map(t=>"#"+t).join(" + "));
@@ -267,7 +287,7 @@ $("#list").addEventListener("click", e => {
   try { navigator.clipboard.writeText(cp.dataset.copy).then(ok, fallback); } catch(_) { fallback(); }
 });
 window.addEventListener("hashchange", () => setCity(location.hash.slice(1)));
-setCity(location.hash.slice(1));
+setCity(location.hash.slice(1) || loadStore().lastCity);
 </script>
 </body>
 </html>
