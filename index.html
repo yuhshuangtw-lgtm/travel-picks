@@ -22,6 +22,7 @@
   --bg:#0f1714; --surface:#16211d; --ink:#e7eee9; --muted:#97a69f; --line:#26342e;
   --jade:#5cc0a0; --jade-soft:#1b3129; --amber:#f0a646; --amber-soft:#3a2a14; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -35,7 +36,7 @@ h1 span{color:var(--amber)}
 .search input{width:100%;font:inherit;font-size:16px;padding:12px 14px 12px 40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .search input:focus{outline:2px solid var(--jade);outline-offset:1px;border-color:transparent}
 .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;padding-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;font:inherit;font-size:13px;font-weight:500;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
 .chip b{font-weight:600;color:var(--muted);margin-left:4px;font-variant-numeric:tabular-nums}
@@ -65,21 +66,10 @@ h2 small{font-family:var(--body);font-size:13px;font-weight:500;color:var(--mute
 .btn.map{background:var(--jade-soft);color:var(--jade)}
 .btn.map:hover{background:var(--jade);color:var(--bg)}
 mark{background:var(--amber-soft);color:inherit;border-radius:3px;padding:0 1px}
-.tagrow{display:flex;flex-wrap:wrap;gap:6px;padding-top:8px;align-items:center}
-.tagtoggle{font:inherit;font-size:13px;font-weight:600;padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.tagtoggle .n{background:var(--amber);color:var(--bg);border-radius:999px;font-size:11px;padding:0 6px;font-variant-numeric:tabular-nums}
-.tagtoggle svg{transition:transform .15s}
-.tagtoggle[aria-expanded="true"] svg{transform:rotate(180deg)}
-.tagtoggle:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.panel{display:grid;gap:8px;padding-top:10px;max-height:45vh;overflow-y:auto}
-.panel .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.panel .lbl{width:52px;flex:none;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .tag{font:inherit;font-size:12px;font-weight:500;padding:4px 9px;border-radius:6px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
 .tag::before{content:"#";opacity:.6;margin-right:1px}
 .tag:hover{color:var(--ink);border-color:var(--muted)}
 .tag[aria-pressed="true"]{background:var(--amber-soft);border:1px solid var(--amber);color:var(--ink)}
-.tag:focus-visible,.clear:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.clear{flex:none;font:inherit;font-size:12px;font-weight:600;padding:4px 8px;border:0;background:transparent;color:var(--amber);cursor:pointer}
 .tags{display:flex;flex-wrap:wrap;gap:4px}
 .tags .tag{font-size:11px;padding:2px 7px}
 .status{font-size:13px;color:var(--muted);padding-top:16px}
@@ -91,6 +81,43 @@ footer{color:var(--muted);font-size:13px;padding-block:24px 40px;border-top:1px 
 .city span{font-family:var(--zh);font-weight:500;opacity:.8}
 .city[aria-current="page"]{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 .city:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+/* Filter bar: one compact sticky row on phones, filters in a bottom sheet */
+.row{display:flex;gap:8px;align-items:stretch}
+.row .search{flex:1;min-width:0}
+.fbtn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:14px;font-weight:600;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.fbtn .n,.done .n{background:var(--amber);color:var(--bg);border-radius:999px;font-size:11px;padding:1px 6px;font-variant-numeric:tabular-nums}
+.fbtn:focus-visible,.x:focus-visible,.reset:focus-visible,.done:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.active{display:flex;flex-wrap:wrap;gap:6px}
+.active:not(:empty){padding-top:8px}
+.pill{font:inherit;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;border:1px solid var(--amber);background:var(--amber-soft);color:var(--ink);cursor:pointer}
+.pill::after{content:"×";font-size:14px;line-height:1;color:var(--muted)}
+.tag:focus-visible,.pill:focus-visible,.chip:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.grp{display:flex;flex-direction:column;gap:6px}
+.grp .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.grp .list{display:flex;flex-wrap:wrap;gap:6px}
+.filters{display:grid;gap:14px}
+.sheethead{display:flex;justify-content:space-between;align-items:center;font-size:17px}
+.x{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+.sheetfoot{display:flex;gap:8px;position:sticky;bottom:0;background:var(--surface);padding-top:10px;border-top:1px solid var(--line)}
+.reset{font:inherit;font-weight:600;padding:12px 16px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.done{flex:1;font:inherit;font-weight:600;padding:12px 16px;border-radius:10px;border:0;background:var(--jade);color:var(--bg);cursor:pointer}
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45)}
+@media (max-width:719px){
+  .chip{font-size:13px;padding:6px 11px}
+  .filters{position:fixed;left:0;right:0;bottom:0;z-index:30;max-height:85vh;overflow-y:auto;background:var(--surface);border-radius:16px 16px 0 0;
+    padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+    transform:translateY(100%);visibility:hidden;box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+  .filters.open{transform:none;visibility:visible}
+}
+@media (min-width:720px){
+  .fbtn,.active,.sheethead,.sheetfoot,.scrim{display:none!important}
+  .bar{position:static}
+  .filters{padding-top:12px;gap:10px}
+  .grp{flex-direction:row;align-items:baseline;gap:10px}
+  .grp .lbl{width:72px;flex:none}
+}
+@media (prefers-reduced-motion:no-preference){.filters{transition:transform .22s ease,visibility .22s}}
 </style>
 </head>
 <body>
@@ -104,13 +131,23 @@ footer{color:var(--muted);font-size:13px;padding-block:24px 40px;border-top:1px 
 </div>
 
 <div class="bar"><div class="wrap">
-  <label class="search" for="q">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="q" type="search" placeholder="Search name, area, food…" autocomplete="off" aria-label="Search places">
-  </label>
-  <div class="chips" id="chips" role="toolbar" aria-label="Categories"></div>
-  <div class="tagrow" id="tagrow"></div>
-  <div class="panel" id="panel" role="toolbar" aria-label="Tags" hidden></div>
+  <div class="row">
+    <label class="search" for="q">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search name, area, food…" autocomplete="off" aria-label="Search places">
+    </label>
+    <button class="fbtn" id="fbtn" aria-controls="filters" aria-expanded="false">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters<span class="n" id="fcount" hidden></span>
+    </button>
+  </div>
+  <div class="active" id="active"></div>
+  <div class="filters" id="filters" role="dialog" aria-label="Filters">
+    <div class="sheethead"><strong>Filters</strong><button class="x" id="fclose" aria-label="Close filters"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="grp"><span class="lbl">Category</span><div class="chips" id="chips"></div></div>
+    <div id="panel"></div>
+    <div class="sheetfoot"><button class="reset" id="reset">Reset</button><button class="done" id="done">Show places</button></div>
+  </div>
+  <div class="scrim" id="scrim" hidden></div>
 </div></div>
 
 <div class="wrap">
@@ -122,9 +159,8 @@ footer{color:var(--muted);font-size:13px;padding-block:24px 40px;border-top:1px 
 <script>
 const { categories: CATEGORIES, cities: CITIES } = window.PICKS;
 const $ = s => document.querySelector(s);
-let city = CITIES[0], activeCat = "all", panelOpen = false;
+let city = CITIES[0], activeCat = "all", sheetOpen = false;
 const activeTags = new Set();
-try { panelOpen = window.matchMedia("(min-width: 720px)").matches; } catch(_) {}
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const hl = (s, q) => { const e = esc(s); if(!q) return e; const i = s.toLowerCase().indexOf(q); return i<0 ? e : esc(s.slice(0,i))+"<mark>"+esc(s.slice(i,i+q.length))+"</mark>"+esc(s.slice(i+q.length)); };
@@ -162,14 +198,20 @@ function renderBar(){
     return `<button class="chip" data-cat="${c.id}" aria-pressed="${c.id===activeCat}">${esc(c.label)}<b>${n}</b></button>`;
   }).join("");
   const tagBtn = t => `<button class="tag" data-tag="${esc(t)}" aria-pressed="${activeTags.has(t)}">${esc(t)}</button>`;
-  const groups = Object.entries(city.tags || {});
-  $("#tagrow").hidden = !groups.length;
-  $("#tagrow").innerHTML =
-    `<button class="tagtoggle" id="tagtoggle" aria-expanded="${panelOpen}" aria-controls="panel">Filter by tag${activeTags.size?`<span class="n">${activeTags.size}</span>`:""}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>` +
-    (panelOpen ? "" : [...activeTags].map(tagBtn).join("")) +
-    (activeTags.size ? `<button class="clear" id="clear">Clear</button>` : "");
-  $("#panel").hidden = !panelOpen || !groups.length;
-  $("#panel").innerHTML = groups.map(([g,ts]) => `<div class="grp"><span class="lbl">${esc(g)}</span>${ts.map(tagBtn).join("")}</div>`).join("");
+  $("#panel").innerHTML = Object.entries(city.tags || {}).map(([g,ts]) => `<div class="grp"><span class="lbl">${esc(g)}</span><div class="list">${ts.map(tagBtn).join("")}</div></div>`).join("");
+  $("#panel").style.display = $("#panel").innerHTML ? "grid" : "none";
+  $("#panel").style.gap = "14px";
+  const nActive = activeTags.size + (activeCat==="all" ? 0 : 1);
+  $("#fcount").hidden = !nActive; $("#fcount").textContent = nActive;
+  $("#active").innerHTML = (activeCat==="all" ? "" : `<button class="pill" data-cat="all" aria-label="Remove category ${esc(catLabel(activeCat))}">${esc(catLabel(activeCat))}</button>`) +
+    [...activeTags].map(t => `<button class="pill" data-tag="${esc(t)}" aria-label="Remove tag ${esc(t)}">#${esc(t)}</button>`).join("");
+}
+function setSheet(open){
+  sheetOpen = open;
+  $("#filters").classList.toggle("open", open);
+  $("#scrim").hidden = !open;
+  $("#fbtn").setAttribute("aria-expanded", open);
+  document.body.style.overflow = open ? "hidden" : "";
 }
 
 function cardHTML(p,q){ return `
@@ -197,16 +239,19 @@ function render(){
       <div class="grid">${items.map(p=>cardHTML(p,q)).join("")}</div></section>`;
   }).join("");
   $("#list").innerHTML = html || `<div class="empty">Nothing matches. Try clearing a tag or searching something broader.</div>`;
+  $("#done").textContent = `Show ${list.length} place${list.length===1?"":"s"}`;
 }
 
 function toggleTag(t){ activeTags.has(t) ? activeTags.delete(t) : activeTags.add(t); render(); }
 $("#chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if(!b) return; activeCat = b.dataset.cat; render(); });
-$("#tagrow").addEventListener("click", e => {
-  if(e.target.closest("#tagtoggle")){ panelOpen = !panelOpen; render(); return; }
-  if(e.target.closest("#clear")){ activeTags.clear(); render(); return; }
-  const b = e.target.closest(".tag"); if(b) toggleTag(b.dataset.tag);
-});
 $("#panel").addEventListener("click", e => { const b = e.target.closest(".tag"); if(b) toggleTag(b.dataset.tag); });
+$("#active").addEventListener("click", e => { const b = e.target.closest(".pill"); if(!b) return; if(b.dataset.cat) activeCat = "all"; else activeTags.delete(b.dataset.tag); render(); });
+$("#fbtn").addEventListener("click", () => setSheet(true));
+$("#fclose").addEventListener("click", () => setSheet(false));
+$("#done").addEventListener("click", () => { setSheet(false); window.scrollTo({top: $("#list").offsetTop - 80}); });
+$("#scrim").addEventListener("click", () => setSheet(false));
+$("#reset").addEventListener("click", () => { activeCat = "all"; activeTags.clear(); render(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape" && sheetOpen) setSheet(false); });
 $("#q").addEventListener("input", render);
 $("#list").addEventListener("click", e => {
   const tg = e.target.closest(".tag"); if(tg){ toggleTag(tg.dataset.tag); window.scrollTo({top:0}); return; }
