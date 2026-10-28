@@ -1,0 +1,12 @@
+{
+  "name": "Travel Picks",
+  "short_name": "Travel Picks",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f1714",
+  "theme_color": "#1f6b55",
+  "icons": [
+    {"src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}
